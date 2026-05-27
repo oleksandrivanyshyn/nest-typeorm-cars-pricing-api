@@ -13,7 +13,7 @@ import { User } from '../users/user.entity';
 import { ReportDto } from './dtos/report.dto';
 import { Serialize } from '../interceptors/serialize.interceptor';
 import { ApproveReportDto } from './dtos/approve-report.dto';
-import { CurrentUser } from '../decorators/current-user.decorator';
+import { CurrentUser } from '../users/decorators/current-user.decorator';
 
 @Controller('reports')
 export class ReportsController {
