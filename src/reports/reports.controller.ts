@@ -1,42 +1,20 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
-import { ReportsService } from './reports.service';
+import { Controller, Post, Body, UseGuards } from '@nestjs/common';
 import { CreateReportDto } from './dtos/create-report.dto';
-import { UpdateReportDto } from './dtos/update-report.dto';
+import { ReportsService } from './reports.service';
+import { AuthGuard } from '../guards/auth.guard';
+import { User } from '../users/user.entity';
+import { ReportDto } from './dtos/report.dto';
+import { Serialize } from '../interceptors/serialize.interceptor';
+import { CurrentUser } from '../decorators/current-user.decorator';
 
 @Controller('reports')
 export class ReportsController {
-  constructor(private readonly reportsService: ReportsService) {}
+  constructor(private reportsService: ReportsService) {}
 
   @Post()
-  create(@Body() createReportDto: CreateReportDto) {
-    return this.reportsService.create(createReportDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.reportsService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.reportsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateReportDto: UpdateReportDto) {
-    return this.reportsService.update(+id, updateReportDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.reportsService.remove(+id);
+  @UseGuards(AuthGuard)
+  @Serialize(ReportDto)
+  createReport(@Body() body: CreateReportDto, @CurrentUser() user: User) {
+    return this.reportsService.create(body, user);
   }
 }
