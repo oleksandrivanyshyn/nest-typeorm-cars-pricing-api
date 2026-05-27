@@ -10,6 +10,7 @@ import {
   NotFoundException,
   UseInterceptors,
   ClassSerializerInterceptor,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
@@ -18,6 +19,7 @@ import { Serialize } from '../interceptors/serialize.interceptor';
 import { UserDto } from './dtos/user.dto';
 import { AuthService } from './auth.service';
 import { Session } from '@nestjs/common';
+import { AuthGuard } from '../guards/auth.guard';
 
 @Controller('auth')
 @Serialize(UserDto)
@@ -27,6 +29,7 @@ export class UsersController {
     private readonly authService: AuthService,
   ) {}
   @Get('/whoami')
+  @UseGuards(AuthGuard)
   whoAmI(@Session() session: any) {
     return this.usersService.findOne(session.userId);
   }
